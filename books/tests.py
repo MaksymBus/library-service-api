@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
@@ -20,14 +21,14 @@ class UnauthenticatedBooksApiTests(TestCase):
         self.book1 = Book.objects.create(
             title="test_title1",
             author="test_author1",
-            cover="HARD",
+            cover="HD",
             inventory=1,
             daily_fee=12.23,
         )
         self.book2 = Book.objects.create(
             title="test_title2",
             author="test_author2",
-            cover="HARD",
+            cover="HD",
             inventory=2,
             daily_fee=22.23,
         )
@@ -53,7 +54,7 @@ class UnauthenticatedBooksApiTests(TestCase):
         payload = {
             "title": "new_title",
             "author": "new_author",
-            "cover": "HARD",
+            "cover": "HD",
             "inventory": 2,
             "daily_fee": 22.23,
         }
@@ -66,7 +67,7 @@ class UnauthenticatedBooksApiTests(TestCase):
         payload = {
             "title": "update_title",
             "author": "update_author",
-            "cover": "HARD",
+            "cover": "HD",
             "inventory": 2,
             "daily_fee": 22.23,
         }
@@ -81,47 +82,62 @@ class UnauthenticatedBooksApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-#
-# class AdminCrewApiTests(TestCase):
-#     def setUp(self):
-#         self.client = APIClient()
-#         self.user = get_user_model().objects.create_user(
-#             "admin@admin.com", "testpass", is_staff=True
-#         )
-#         self.client.force_authenticate(self.user)
-#
-#     def test_create_book(self):
-#         payload = {
-#             "title": "new_title",
-#             "author": "new_author",
-#             "cover": "HARD",
-#             "inventory": 2,
-#             "daily_fee": 22.23,
-#         }
-#         res = self.client.post(BOOKS_URL, payload)
-#
-#         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-#
-#     def test_update_journey(self):
-#         payload = {
-#             "departure_time": datetime(2025, 10, 23, 8, 0),
-#             "arrival_time": datetime(2025, 10, 23, 14, 0),
-#             "train": self.train2.id,
-#             "route": self.route.id,
-#         }
-#
-#         url = detail_url(self.journey1.id)
-#
-#         res = self.client.put(url, payload)
-#         self.journey1.refresh_from_db()
-#
-#         self.assertEqual(res.status_code, status.HTTP_200_OK)
-#         self.assertEqual(self.journey1.train, self.train2)
-#
-#     def test_delete_journey(self):
-#         url = detail_url(self.journey1.id)
-#
-#         res = self.client.delete(url)
-#
-#         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-#         self.assertFalse(Journey.objects.filter(id=self.journey1.id).exists())
+class AdminBookApiTests(TestCase):
+    def setUp(self):
+        self.book1 = Book.objects.create(
+            title="test_title1",
+            author="test_author1",
+            cover="HD",
+            inventory=1,
+            daily_fee=12.23,
+        )
+        self.book2 = Book.objects.create(
+            title="test_title2",
+            author="test_author2",
+            cover="HD",
+            inventory=2,
+            daily_fee=22.23,
+        )
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            "test_admin@admin.com", "testpass", is_staff=True
+        )
+        self.client.force_authenticate(self.user)
+
+    def test_create_book(self):
+        payload = {
+            "title": "new_title",
+            "author": "new_author",
+            "cover": "ST",
+            "inventory": 2,
+            "daily_fee": 22.23,
+        }
+        res = self.client.post(BOOKS_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_update_book(self):
+        payload = {
+            "title": "update_title",
+            "author": "update_author",
+            "cover": "ST",
+            "inventory": 2,
+            "daily_fee": 22.23,
+        }
+
+        url = detail_url(self.book1.id)
+
+        res = self.client.put(url, payload)
+        self.book1.refresh_from_db()
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.book1.title, "update_title")
+        self.assertEqual(self.book1.author, "update_author")
+
+    def test_delete_book(self):
+        url = detail_url(self.book1.id)
+
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Book.objects.filter(id=self.book1.id).exists())
