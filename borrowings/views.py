@@ -1,8 +1,9 @@
+from django.contrib.admin import action
 from rest_framework import viewsets, mixins
 from rest_framework.permissions import IsAuthenticated
 
 from borrowings.models import Borrowing
-from borrowings.serializers import BorrowingListSerializer, BorrowingDetailSerializer
+from borrowings.serializers import BorrowingListSerializer, BorrowingDetailSerializer, BorrowingCreateSerializer
 
 
 class BorrowingViewSet(
@@ -17,4 +18,10 @@ class BorrowingViewSet(
     def get_serializer_class(self):
         if self.action == "retrieve":
             return BorrowingDetailSerializer
+
+        if self.action == "create":
+            return BorrowingCreateSerializer
+
         return BorrowingListSerializer
+
+
