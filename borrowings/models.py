@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from django.contrib.auth import get_user_model
 from django.db import models
 from rest_framework.exceptions import ValidationError
@@ -21,7 +23,7 @@ class Borrowing(models.Model):
         return f"User:{self.user.email} (book:{self.book.title}, borrow_date:{self.borrow_date}"
 
     def clean(self):
-        if self.borrow_date < self.expected_return_date:
+        if self.expected_return_date <= timezone.now().date():
             raise ValidationError(
                 {
                     "expected_return_date": "Expected return date must be before the borrow date"
