@@ -1,0 +1,98 @@
+[
+    {
+        "model": "user.user",
+        "pk": 1,
+        "fields": {
+            "password": "pbkdf2_sha256$260000$c456$96b4b2c15d7426e84d943c2c36a3e1f0e42d7637",
+            "last_login": null,
+            "is_superuser": false,
+            "email": "user@test.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2025-10-01T00:00:00Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "user.user",
+        "pk": 2,
+        "fields": {
+            "password": "pbkdf2_sha256$260000$c456$96b4b2c15d7426e84d943c2c36a3e1f0e42d7637",
+            "last_login": null,
+            "is_superuser": true,
+            "email": "admin@test.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2025-10-01T00:00:00Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "books.book",
+        "pk": 1,
+        "fields": {
+            "title": "Dune",
+            "author": "Herbert",
+            "cover": "HD",
+            "inventory": 4,
+            "daily_fee": "2.00"
+        }
+    },
+    {
+        "model": "books.book",
+        "pk": 2,
+        "fields": {
+            "title": "Silo",
+            "author": "Howey",
+            "cover": "ST",
+            "inventory": 1,
+            "daily_fee": "3.50"
+        }
+    },
+    {
+        "model": "books.book",
+        "pk": 3,
+        "fields": {
+            "title": "Zero Stock",
+            "author": "Tester",
+            "cover": "HD",
+            "inventory": 0,
+            "daily_fee": "1.00"
+        }
+    },
+    {
+        "model": "borrowings.borrowing",
+        "pk": 1,
+        "fields": {
+            "borrow_date": "2025-10-01",
+            "expected_return_date": "2025-10-08",
+            "actual_return_date": null,
+            "book": 1,
+            "user": 1
+        }
+    },
+    {
+        "model": "borrowings.borrowing",
+        "pk": 2,
+        "fields": {
+            "borrow_date": "2025-09-25",
+            "expected_return_date": "2025-10-01",
+            "actual_return_date": "2025-09-30",
+            "book": 2,
+            "user": 1
+        }
+    },
+    {
+        "model": "borrowings.borrowing",
+        "pk": 3,
+        "fields": {
+            "borrow_date": "2025-10-01",
+            "expected_return_date": "2025-10-15",
+            "actual_return_date": null,
+            "book": 3,
+            "user": 2
+        }
+    }
+]
