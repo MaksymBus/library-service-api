@@ -1,3 +1,5 @@
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -67,3 +69,24 @@ class BorrowingViewSet(
             BorrowingDetailSerializer(borrowing).data,
             status=status.HTTP_200_OK
         )
+
+    @extend_schema(
+        summary="List borrowings",
+        description="Returns a list of borrowings with optional params.",
+        parameters=[
+            OpenApiParameter(
+                name="is_active",
+                type=OpenApiTypes.STR,
+                description="Filter by is_active, chose from true/false options (ex. ?is_active=true)",
+                required=False
+            ),
+            OpenApiParameter(
+                name="user_id",
+                type=OpenApiTypes.INT,
+                description="Filter by user_id for user.is_staff (ex. ?user_id=1)",
+                required=False
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
