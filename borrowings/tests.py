@@ -1,4 +1,6 @@
+import os
 from datetime import date, timedelta
+from unittest.mock import Mock, patch
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -9,6 +11,10 @@ from rest_framework import status
 
 from books.models import Book
 from borrowings.models import Borrowing
+from borrowings.notifications.telegram import (
+    send_telegram_notification,
+    TELEGRAM_API_URL
+)
 from borrowings.serializers import (
     BorrowingListSerializer,
     BorrowingDetailSerializer
@@ -167,3 +173,34 @@ class AdminBorrowingApiTests(TestCase):
 
         self.assertIn(serializer2.data, res.data)
         self.assertNotIn(serializer1.data, res.data)
+
+
+class TelegramSendingNotificationTests(TestCase):
+    @patch.dict(os.environ,
+                {"TELEGRAM_BOT_TOKEN": "TEST_BOT_TOKEN",
+                 "TELEGRAM_CHAT_ID": os.getenv("TELEGRAM_CHAT_ID")})
+    @patch("requests.post")
+    def test_sending_notification_about_new_borrowing(self, mock_post):
+
+        message = "Test message notification"
+
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_post.return_value = mock_response
+
+        send_telegram_notification(message=message)
+
+        mock_post.assert_called_once()
+
+        expected_payload = {
+            "chat_id": os.getenv("TELEGRAM_CHAT_ID"),
+            "text": message,
+            "parse_mode": "HTML",
+        }
+
+        mock_post.assert_called_with(
+            TELEGRAM_API_URL,
+            data=expected_payload
+        )
+
+        self.assertEqual(mock_response.status_code, status.HTTP_200_OK)
