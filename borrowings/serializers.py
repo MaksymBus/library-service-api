@@ -45,7 +45,11 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         data = super(BorrowingCreateSerializer, self).validate(attrs=attrs)
         if attrs["book"].inventory <= 0:
-            raise serializers.ValidationError({"book": "Book's inventory <= 0"})
+            raise serializers.ValidationError(
+                {
+                    "book": "Book's inventory <= 0"
+                }
+            )
         return data
 
     def create(self, validated_data):
@@ -73,7 +77,10 @@ class BorrowingReturnSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if self.instance.actual_return_date:
             raise serializers.ValidationError(
-                {"actual_return_date": "This borrowing has already been returned"}
+                {
+                    "actual_return_date":
+                        "This borrowing has already been returned"
+                }
             )
         return attrs
 

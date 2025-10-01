@@ -63,4 +63,7 @@ class BorrowingViewSet(
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        return Response(BorrowingDetailSerializer(borrowing).data, status=status.HTTP_200_OK)
+        return Response(
+            BorrowingDetailSerializer(borrowing).data,
+            status=status.HTTP_200_OK
+        )

@@ -9,7 +9,10 @@ from rest_framework import status
 
 from books.models import Book
 from borrowings.models import Borrowing
-from borrowings.serializers import BorrowingListSerializer, BorrowingDetailSerializer
+from borrowings.serializers import (
+    BorrowingListSerializer,
+    BorrowingDetailSerializer
+)
 
 BORROWING_URL = reverse("borrowings:borrowing-list")
 
@@ -17,8 +20,13 @@ BORROWING_URL = reverse("borrowings:borrowing-list")
 def detail_url(borrowing_id):
     return reverse("borrowings:borrowing-detail", args=[borrowing_id])
 
+
 def return_url(borrowing_id):
-    return reverse("borrowings:borrowing-return", args=[borrowing_id])
+    return reverse(
+        "borrowings:borrowing-return",
+        args=[borrowing_id]
+    )
+
 
 class UnauthenticatedBorrowingApiTests(TestCase):
     def setUp(self) -> None:
@@ -148,9 +156,11 @@ class AdminBorrowingApiTests(TestCase):
         self.assertEqual(serializer.data, res.data)
         self.assertEqual(len(res.data), 2)
 
-
     def test_filter_borrowings_by_user_id(self):
-        res = self.client.get(BORROWING_URL, {"user_id": self.non_admin_user.id})
+        res = self.client.get(
+            BORROWING_URL,
+            {"user_id": self.non_admin_user.id}
+        )
 
         serializer1 = BorrowingListSerializer(self.borrowing1)
         serializer2 = BorrowingListSerializer(self.borrowing2)
