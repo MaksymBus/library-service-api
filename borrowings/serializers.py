@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from django.db import transaction
 from rest_framework import serializers
 
@@ -16,7 +18,7 @@ class BorrowingListSerializer(serializers.ModelSerializer):
             "expected_return_date",
             "actual_return_date",
             "book_title",
-            "user"
+            "user",
         )
 
 
@@ -31,7 +33,7 @@ class BorrowingDetailSerializer(serializers.ModelSerializer):
             "expected_return_date",
             "actual_return_date",
             "book",
-            "user"
+            "user",
         )
 
 
@@ -43,9 +45,7 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         data = super(BorrowingCreateSerializer, self).validate(attrs=attrs)
         if attrs["book"].inventory <= 0:
-            raise serializers.ValidationError(
-                {"book": "Book's inventory <= 0"}
-            )
+            raise serializers.ValidationError({"book": "Book's inventory <= 0"})
         return data
 
     def create(self, validated_data):
@@ -59,6 +59,33 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
             borrowing = Borrowing.objects.create(
                 user=user,
                 book=book,
-                expected_return_date=validated_data["expected_return_date"]
+                expected_return_date=validated_data["expected_return_date"],
             )
+            return borrowing
+
+
+class BorrowingReturnSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Borrowing
+        fields = ("id", "actual_return_date")
+        read_only_fields = ("id", "actual_return_date")
+
+    def validate(self, attrs):
+        if self.instance.actual_return_date:
+            raise serializers.ValidationError(
+                {"actual_return_date": "This borrowing has already been returned"}
+            )
+        return attrs
+
+    def save(self, **kwargs):
+        with transaction.atomic():
+            borrowing = self.instance
+            book = borrowing.book
+
+            borrowing.actual_return_date = timezone.now().date()
+            borrowing.save()
+
+            book.inventory += 1
+            book.save()
+
             return borrowing
