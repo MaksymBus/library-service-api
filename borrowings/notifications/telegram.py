@@ -15,7 +15,8 @@ def send_telegram_notification(message: str) -> None:
 
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
         raise ValueError(
-            "Telegram credentials missing. Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in .env."
+            "Telegram credentials missing. "
+            "Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in .env."
         )
 
     payload = {

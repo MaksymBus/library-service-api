@@ -11,7 +11,10 @@ from rest_framework import status
 
 from books.models import Book
 from borrowings.models import Borrowing
-from borrowings.notifications.telegram import send_telegram_notification, TELEGRAM_API_URL
+from borrowings.notifications.telegram import (
+    send_telegram_notification,
+    TELEGRAM_API_URL
+)
 from borrowings.serializers import (
     BorrowingListSerializer,
     BorrowingDetailSerializer
@@ -177,7 +180,7 @@ class TelegramSendingNotificationTests(TestCase):
                 {"TELEGRAM_BOT_TOKEN": "TEST_BOT_TOKEN",
                  "TELEGRAM_CHAT_ID": os.getenv("TELEGRAM_CHAT_ID")})
     @patch("requests.post")
-    def test_sending_telegram_notification_about_new_borrowing(self, mock_post):
+    def test_sending_notification_about_new_borrowing(self, mock_post):
 
         message = "Test message notification"
 
