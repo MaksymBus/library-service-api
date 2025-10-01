@@ -85,7 +85,7 @@ class AuthenticatedBorrowingApiTests(TestCase):
         serializer = BorrowingListSerializer(borrowings, many=True)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
+        self.assertEqual(res.data["results"], serializer.data)
         self.assertEqual(borrowings.count(), 2)
 
     def test_retrieve_borrowing_detail(self):
@@ -112,8 +112,8 @@ class AuthenticatedBorrowingApiTests(TestCase):
         serializer1 = BorrowingListSerializer(self.borrowing1)
         serializer2 = BorrowingListSerializer(self.borrowing2)
 
-        self.assertIn(serializer1.data, res.data)
-        self.assertIn(serializer2.data, res.data)
+        self.assertIn(serializer1.data, res.data["results"])
+        self.assertIn(serializer2.data, res.data["results"])
 
 
 class AdminBorrowingApiTests(TestCase):
@@ -159,8 +159,8 @@ class AdminBorrowingApiTests(TestCase):
         borrowings = Borrowing.objects.all()
         serializer = BorrowingListSerializer(borrowings, many=True)
 
-        self.assertEqual(serializer.data, res.data)
-        self.assertEqual(len(res.data), 2)
+        self.assertEqual(serializer.data, res.data["results"])
+        self.assertEqual(len(res.data["results"]), 2)
 
     def test_filter_borrowings_by_user_id(self):
         res = self.client.get(
@@ -171,8 +171,8 @@ class AdminBorrowingApiTests(TestCase):
         serializer1 = BorrowingListSerializer(self.borrowing1)
         serializer2 = BorrowingListSerializer(self.borrowing2)
 
-        self.assertIn(serializer2.data, res.data)
-        self.assertNotIn(serializer1.data, res.data)
+        self.assertIn(serializer2.data, res.data["results"])
+        self.assertNotIn(serializer1.data, res.data["results"])
 
 
 class TelegramSendingNotificationTests(TestCase):
