@@ -5,13 +5,16 @@ class IsAdminUserOrReadOnly(BasePermission):
     """
     Custom permission to allow read-only access (GET, HEAD, OPTIONS) for
     all users (authenticated and unauthenticated), and full read/write/delete
-    (CRUD) access only for users with the 'is_staff' flag set (i.e., Admin users).
+    (CRUD) access only for users with the 'is_staff' flag
+    set (i.e., Admin users).
 
     Permissions logic:
-    1. If the request method is a SAFE_METHOD (Read operation), allow access (True).
+    1. If the request method is a SAFE_METHOD (Read operation),
+        allow access (True).
        This ensures that all users can list or retrieve resources.
     2. Otherwise (for write/unsafe operations like POST, PUT, DELETE),
-       only allow access if the requesting user is authenticated and is a staff member.
+       only allow access if the requesting user is authenticated
+       and is a staff member.
     """
     def has_permission(self, request, view):
         if request.method in SAFE_METHODS:
